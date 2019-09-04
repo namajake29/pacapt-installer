@@ -17,8 +17,8 @@ gdebi=$(dpkg --get-selections  | grep "gdebi" | awk '{print $1}')
 
 ## Settings
 working_directly="./pacapt"
-control_url=""
-postinst_url=""
+control_url="https://raw.githubusercontent.com/Hayao0819/pacapt-installer/master/control"
+postinst_url="https://raw.githubusercontent.com/Hayao0819/pacapt-installer/master/postinst"
 pacapt_url="https://github.com/icy/pacapt/raw/ng/pacapt"
 pacapt_path="usr/local/bin/pacapt"
 initial_directory=$(pwd)
