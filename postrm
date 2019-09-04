@@ -1,13 +1,11 @@
 #!/usr/bin/env bash
 
-pacapt_path="usr/local/bin/pacapt"
-
-function make_link {
-    sudo unlink/usr/local/bin/pacapt-tlmgr
+function del_link {
+    sudo unlink /usr/local/bin/pacapt-tlmgr
     sudo unlink /usr/local/bin/pacapt-conda
     sudo unlink /usr/local/bin/p-tlmgr
     sudo unlink /usr/local/bin/p-conda
     sudo unlink /usr/local/bin/pacman
     return 0
 }
-make_link
+del_link
