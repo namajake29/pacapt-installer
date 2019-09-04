@@ -8,15 +8,15 @@ function make_link {
     sudo ln -s /$pacapt_path /usr/local/bin/p-tlmgr
     sudo ln -s /$pacapt_path /usr/local/bin/p-conda
     sudo ln -sv /$pacapt_path /usr/local/bin/pacman || true
-    exit 0
+    return 0
 }
 
 function pacapt_to_yay {
     echo "alias yay='sudo pacapt'" >> /etc/bash.bashrc
     echo "alias yay='sudo pacapt'" >> /etc/skel/.bashrc
     source /etc/bash.bashrc
-    exit 0
+    return 0
 }
 
 make_link
-pacapt_to_yay
+# pacapt_to_yay
