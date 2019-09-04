@@ -95,7 +95,7 @@ function mode2 {
     rm -r $working_directly
     rm $working_directly.deb
     pacapt_to_yay
-    pacapt -V
+    # pacapt -V
     return 0
 }
 
@@ -118,5 +118,4 @@ case $mode in
 esac
 
 cd $initial_directory
-rm -r $working_directly
 unalias wget
