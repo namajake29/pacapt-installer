@@ -41,14 +41,14 @@ function make_link {
     sudo ln -s /$pacapt_path /usr/local/bin/p-tlmgr
     sudo ln -s /$pacapt_path /usr/local/bin/p-conda
     sudo ln -sv /$pacapt_path /usr/local/bin/pacman || true
-    exit 0
+    return 0
 }
 
 function pacapt_to_yay {
     echo "alias yay='sudo pacapt'" >> /etc/bash.bashrc
     echo "alias yay='sudo pacapt'" >> /etc/skel/.bashrc
     source /etc/bash.bashrc
-    exit 0
+    return 0
 }
 
 function mode1 {
@@ -56,7 +56,7 @@ function mode1 {
     sudo chmod 755 /$pacapt_path
     make_link
     pacapt_to_yay
-    exit 0
+    return 0
 }
 
 function build_deb {
@@ -75,7 +75,7 @@ function build_deb {
     cd ..
     chmod -R 755 $working_directly
     dpkg -b $working_directly
-    exit 0
+    return 0
 }
 
 function mode2 {
@@ -96,7 +96,7 @@ function mode2 {
     rm $working_directly.deb
     pacapt_to_yay
     pacapt -V
-    exit 0
+    return 0
 }
 
 function mode3 {
