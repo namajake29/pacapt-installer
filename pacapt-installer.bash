@@ -25,7 +25,7 @@ initial_directory=$(pwd)
 
 
 ## Select mode.
-echo
+echo 
 echo "------pacapt installer------"
 echo
 echo "How do you install pacapt?"
@@ -60,7 +60,7 @@ function mode1 {
 }
 
 function build_deb {
-    if [[ ! -d $working_directly ]]; then
+    if [[ ! -d $working_directly ]]; then 
         mkdir $working_directly
     fi
     cd $working_directly
@@ -71,13 +71,15 @@ function build_deb {
     wget $control_url
     wget $postinst_url
     echo -e "$(md5sum ../$pacapt_path | awk '{print $1}')    $pacapt_path" > ./md5sums
-    cd ../..
+    cd ..
+    cd ..
     chmod -R 755 $working_directly
     dpkg -b $working_directly
     exit 0
 }
 
 function mode2 {
+    build_deb
     if [[ -z $gdebi ]]; then
         echo "Installing gdebi..."
         apt-get --yes update > /dev/null
