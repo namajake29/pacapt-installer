@@ -1,0 +1,7 @@
+Package: pacapt
+Version: 2.4.2
+Architecture: all
+Maintainer: icy , YamadaHayao
+Section: contrib
+Priority: extra
+Description: An ArchLinux's pacman-like wrapper for many package managers.
