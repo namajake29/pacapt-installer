@@ -38,16 +38,19 @@ initial_directory=$(pwd)
 
 
 ## Select mode.
-echo 
-echo "------pacapt installer------"
-echo
-echo "How do you install pacapt?"
-echo "1: Place pacapt directly. (Do not use Package Manager.)"
-echo "2: After creating the deb file, install it automatically."
-echo "3: After creating the deb file, install it yourself."
-printf "Please enter mode number.: "
-read mode
-
+if [[ -z $1 ]]; then
+    echo 
+    echo "------pacapt installer------"
+    echo
+    echo "How do you install pacapt?"
+    echo "1: Place pacapt directly. (Do not use Package Manager.)"
+    echo "2: After creating the deb file, install it automatically."
+    echo "3: After creating the deb file, install it yourself."
+    printf "Please enter mode number.: "
+    read mode
+else
+    mode=$1
+fi
 
 ## functions 
 function check_debian () {
