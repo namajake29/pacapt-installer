@@ -169,6 +169,8 @@ function mode4 () {
     sudo unlink /usr/local/bin/p-tlmgr
     sudo unlink /usr/local/bin/p-conda
     sudo unlink /usr/local/bin/pacman
+    red_log "The file has been deleted."
+    return 0
 }
 
 function error () {
