@@ -43,7 +43,7 @@ initial_directory=$(pwd)
 
 
 ## Select mode.
-if [[ -z argument ]]; then
+if [[ -z $argument ]]; then
     echo 
     echo "------pacapt installer------"
     echo
