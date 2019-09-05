@@ -28,6 +28,8 @@ fi
 mode=0
 if [[ ! $# = 0 ]]; then
     argument="$@"
+else
+    argument=
 fi
 
 ## Settings
@@ -52,7 +54,7 @@ if [[ -z argument ]]; then
     printf "Please enter mode number.: "
     read mode
 else
-    mode=$1
+    mode=$argument
 fi
 
 ## functions 
