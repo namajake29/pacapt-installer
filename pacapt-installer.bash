@@ -74,7 +74,7 @@ function check_debian () {
     return 0
 }
 function make_link () {
-    sudo ln -s /$pacapt_path/usr/local/bin/pacapt-tlmgr
+    sudo ln -s /$pacapt_path /usr/local/bin/pacapt-tlmgr
     sudo ln -s /$pacapt_path /usr/local/bin/pacapt-conda
     sudo ln -s /$pacapt_path /usr/local/bin/p-tlmgr
     sudo ln -s /$pacapt_path /usr/local/bin/p-conda
