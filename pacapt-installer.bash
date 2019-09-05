@@ -51,7 +51,9 @@ if [[ -z $argument ]]; then
     echo "1: Place pacapt directly. (Do not use Package Manager.)"
     echo "2: After creating the deb file, install it automatically."
     echo "3: After creating the deb file, install it yourself."
-    printf "Please enter mode number.: "
+    echo "4: Remove manually placed pacapt."
+    echo
+    printf "Please enter mode number. : "
     read mode
 else
     mode=$argument
@@ -145,13 +147,31 @@ function mode2 {
     return 0
 }
 
-function mode3 {
+function mode3 () {
     check_debian
     build_deb
     rm -r $working_directly
     exit 0
 }
-function error {
+
+function mode4 () {
+    search_pkg pacapt
+    if [[ $? = 0 ]]; then
+        echo -e "pacapt is managed by dpkg.\nRemove pacapt from dpkg and apt."
+        exit 1
+    fi
+    if [[ -f /$pacapt_path ]]; then
+        echo "pacapt was not found."
+    fi
+    rm /$pacapt_path
+    sudo unlink /usr/local/bin/pacapt-tlmgr
+    sudo unlink /usr/local/bin/pacapt-conda
+    sudo unlink /usr/local/bin/p-tlmgr
+    sudo unlink /usr/local/bin/p-conda
+    sudo unlink /usr/local/bin/pacman
+}
+
+function error () {
     red_log "Enter the mode number."
     exit 1
 }
@@ -162,6 +182,7 @@ case $mode in
     1 ) mode1 ;;
     2 ) mode2 ;;
     3 ) mode3 ;;
+    4 ) mode4 ;;
     0 ) error ;;
     * ) error ;;
 esac
