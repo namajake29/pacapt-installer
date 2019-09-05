@@ -26,9 +26,13 @@ fi
 
 ## Initialize
 mode=0
+<<<<<<< HEAD
 if [[ ! $# = 0 ]]; then
     argument="$@"
 fi
+=======
+argument=$1
+>>>>>>> 0d110a18724e4bd4b8e75767e58c1fcbbfa6036b
 
 ## Settings
 working_directly="./pacapt"
