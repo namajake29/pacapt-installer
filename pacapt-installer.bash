@@ -58,17 +58,11 @@ function check_debian () {
     if [[ -f /etc/os-release ]]; then
         source /etc/os-release
         case $ID in 
-            ubuntu ) break ;;
-            debian ) break ;;
+            ubuntu ) echo "The distribution is Ubuntu." ;;
+            debian ) echo "The distribution is Debian." ;;
             * ) red_log "This mode is only available for Debian and its derivatives."
                 exit 1 ;;
         esac
-    fi
-
-    ## Check dpkg
-    if [[ $(search_pkg dpkg) = 1 ]]; then
-        red_log "dpkg is not installed."
-        exit 1
     fi
     return 0
 }
