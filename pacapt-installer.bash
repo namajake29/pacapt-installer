@@ -3,10 +3,15 @@ set -eu
 
 ## pacapt installer for Ubuntu
 
+## Initial function
+function red_log () {
+    echo -e "\033[0;31m$@\033[0;39m"
+    return 0
+}
 
 ## Check root.
 if [[ ! $UID = 0 ]]; then
-    echo "You need root permission."
+    red_log "You need root permission."
     exit 1
 fi
 
@@ -52,19 +57,19 @@ function check_debian () {
         case $ID in 
             ubuntu ) break ;;
             debian ) break ;;
-            * ) echo "This mode is only available for Debian and its derivatives."
+            * ) red_log "This mode is only available for Debian and its derivatives."
                 exit 1 ;;
         esac
     fi
 
     ## Check dpkg
     if [[ $(search_pkg dpkg) = 1 ]]; then
-        echo "dpkg is not installed."
+        red_log "dpkg is not installed."
         exit 1
     fi
     return 0
 }
-function make_link {
+function make_link () {
     sudo ln -s /$pacapt_path/usr/local/bin/pacapt-tlmgr
     sudo ln -s /$pacapt_path /usr/local/bin/pacapt-conda
     sudo ln -s /$pacapt_path /usr/local/bin/p-tlmgr
@@ -73,15 +78,15 @@ function make_link {
     return 0
 }
 
-function pacapt_to_yay {
+function pacapt_to_yay () {
     echo "alias yay='sudo pacapt'" >> /etc/bash.bashrc
     echo "alias yay='sudo pacapt'" >> /etc/skel/.bashrc
     source /etc/bash.bashrc
     return 0
 }
 
-function mode1 {
-    echo "Downloading pacapt."
+function mode1 () {
+    red_log "Downloading pacapt."
     sudo wget  -O /$pacapt_path $pacapt_url
     sudo chmod 755 /$pacapt_path
     make_link
@@ -89,25 +94,25 @@ function mode1 {
     return 0
 }
 
-function build_deb {
-    echo "Start creating a Debian package file."
+function build_deb () {
+    red_log "Start creating a Debian package file."
     if [[ ! -d $working_directly ]]; then 
         echo "Creating working directory."
         mkdir $working_directly
     fi
     cd $working_directly
-    echo "Creating working directory."
+    red_log "Creating working directory."
     mkdir -p ./$( echo $pacapt_path | sed -e 's/pacapt//g')
-    echo "Downloading pacapt."
+    red_log "Downloading pacapt."
     sudo wget -O ./$pacapt_path $pacapt_url
-    echo "Creating DEBIAN directory."
+    red_log "Creating DEBIAN directory."
     mkdir DEBIAN
     cd ./DEBIAN
-    echo "Downloading control."
+    red_log "Downloading control."
     wget $control_url
-    echo "Downloading postinst"
+    red_log "Downloading postinst"
     wget $postinst_url
-    echo "Downloading postrm"
+    red_log "Downloading postrm"
     wget $postrm_url
     echo -e "$(md5sum ../$pacapt_path | awk '{print $1}')    $pacapt_path" > ./md5sums
     cd ../../
@@ -120,13 +125,13 @@ function mode2 {
     check_debian
     build_deb
     if [[ $(search_pkg gdebi) = 1 ]]; then
-        echo "Installing gdebi..."
+        red_log "Installing gdebi..."
         apt-get --yes update > /dev/null
         apt-get --yes install gdebi-core > /dev/null
     fi
     gdebi $working_directly.deb
     if [[ $(search_pkg gdebi) = 1 ]]; then
-        echo "Uninstalling gdebi..."
+        red_log "Uninstalling gdebi..."
         apt-get --yes purge gdebi-core > /dev/null
         apt-get --yes --purge autoremove > /dev/null
         apt-get --yes clean > /dev/null
@@ -145,7 +150,7 @@ function mode3 {
     exit 0
 }
 function error {
-    echo "Enter the mode number."
+    red_log "Enter the mode number."
     exit 1
 }
 
