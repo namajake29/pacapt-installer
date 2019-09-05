@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -eu
 
 ## pacapt installer for Ubuntu
 
@@ -10,15 +11,22 @@ if [[ ! $UID = 0 ]]; then
 fi
 
 ## Initialize
-mode=0
-alias wget='wget -q'
-gdebi=$(dpkg --get-selections  | grep "gdebi" | awk '{print $1}')
+function search_pkg () {
+    package_exist=$(dpkg --get-selections  | grep -w $1 | awk '{print $1}')
+    if [[ -n $package_exist ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
 
+mode=0
 
 ## Settings
 working_directly="./pacapt"
 control_url="https://raw.githubusercontent.com/Hayao0819/pacapt-installer/master/control"
 postinst_url="https://raw.githubusercontent.com/Hayao0819/pacapt-installer/master/postinst"
+postrm_url="https://raw.githubusercontent.com/Hayao0819/pacapt-installer/master/postrm"
 pacapt_url="https://github.com/icy/pacapt/raw/ng/pacapt"
 pacapt_path="usr/local/bin/pacapt"
 initial_directory=$(pwd)
@@ -35,6 +43,27 @@ echo "3: After creating the deb file, install it yourself."
 printf "Please enter mode number.: "
 read mode
 
+
+## functions 
+function check_debian () {
+    ## Check dist
+    if [[ -f /etc/os-release ]]; then
+        source /etc/os-release
+        case $ID in 
+            ubuntu ) break ;;
+            debian ) break ;;
+            * ) echo "This mode is only available for Debian and its derivatives."
+                exit 1 ;;
+        esac
+    fi
+
+    ## Check dpkg
+    if [[ $(search_pkg dpkg) = 1 ]]; then
+        echo "dpkg is not installed."
+        exit 1
+    fi
+    return 0
+}
 function make_link {
     sudo ln -s /$pacapt_path/usr/local/bin/pacapt-tlmgr
     sudo ln -s /$pacapt_path /usr/local/bin/pacapt-conda
@@ -52,41 +81,51 @@ function pacapt_to_yay {
 }
 
 function mode1 {
-    sudo wget -q -O /$pacapt_path $pacapt_url
+    echo "Downloading pacapt."
+    sudo wget  -O /$pacapt_path $pacapt_url
     sudo chmod 755 /$pacapt_path
     make_link
-    pacapt_to_yay
+    # pacapt_to_yay
     return 0
 }
 
 function build_deb {
+    echo "Start creating a Debian package file."
     if [[ ! -d $working_directly ]]; then 
+        echo "Creating working directory."
         mkdir $working_directly
     fi
     cd $working_directly
-    mkdir -p ./usr/local/bin/
+    echo "Creating working directory."
+    mkdir -p ./$( echo $pacapt_path | sed -e 's/pacapt//g')
+    echo "Downloading pacapt."
     sudo wget -O ./$pacapt_path $pacapt_url
+    echo "Creating DEBIAN directory."
     mkdir DEBIAN
     cd ./DEBIAN
+    echo "Downloading control."
     wget $control_url
+    echo "Downloading postinst"
     wget $postinst_url
+    echo "Downloading postrm"
+    wget $postrm_url
     echo -e "$(md5sum ../$pacapt_path | awk '{print $1}')    $pacapt_path" > ./md5sums
-    cd ..
-    cd ..
+    cd ../../
     chmod -R 755 $working_directly
     dpkg -b $working_directly
     return 0
 }
 
 function mode2 {
+    check_debian
     build_deb
-    if [[ -z $gdebi ]]; then
+    if [[ $(search_pkg gdebi) = 1 ]]; then
         echo "Installing gdebi..."
         apt-get --yes update > /dev/null
         apt-get --yes install gdebi-core > /dev/null
     fi
     gdebi $working_directly.deb
-    if [[ -z $gdebi ]]; then
+    if [[ $(search_pkg gdebi) = 1 ]]; then
         echo "Uninstalling gdebi..."
         apt-get --yes purge gdebi-core > /dev/null
         apt-get --yes --purge autoremove > /dev/null
@@ -100,6 +139,7 @@ function mode2 {
 }
 
 function mode3 {
+    check_debian
     build_deb
     rm -r $working_directly
     exit 0
@@ -109,6 +149,8 @@ function error {
     exit 1
 }
 
+
+## run function
 case $mode in
     1 ) mode1 ;;
     2 ) mode2 ;;
@@ -118,4 +160,3 @@ case $mode in
 esac
 
 cd $initial_directory
-unalias wget
