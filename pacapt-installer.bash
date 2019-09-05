@@ -9,13 +9,6 @@ function red_log () {
     return 0
 }
 
-## Check root.
-if [[ ! $UID = 0 ]]; then
-    red_log "You need root permission."
-    exit 1
-fi
-
-## Initialize
 function search_pkg () {
     package_exist=$(dpkg --get-selections  | grep -w $1 | awk '{print $1}')
     if [[ -n $package_exist ]]; then
@@ -25,7 +18,17 @@ function search_pkg () {
     fi
 }
 
+## Check root.
+if [[ ! $UID = 0 ]]; then
+    red_log "You need root permission."
+    exit 1
+fi
+
+## Initialize
 mode=0
+if [[ ! $# = 0 ]]; then
+    argument="$@"
+fi
 
 ## Settings
 working_directly="./pacapt"
@@ -38,7 +41,7 @@ initial_directory=$(pwd)
 
 
 ## Select mode.
-if [[ -z $1 ]]; then
+if [[ -z argument ]]; then
     echo 
     echo "------pacapt installer------"
     echo
