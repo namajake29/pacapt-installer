@@ -218,6 +218,7 @@ case $mode in
     2 ) mode2 ;;
     3 ) mode3 ;;
     4 ) mode4 ;;
+    5 ) mode5 ;;
     0 ) error ;;
     * ) error ;;
 esac
