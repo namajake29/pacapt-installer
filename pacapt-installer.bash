@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -eu
+set -e
 
 ## pacapt installer for Ubuntu
 
@@ -10,12 +10,14 @@ function red_log () {
 }
 
 function search_pkg () {
+    set +e
     package_exist=$(dpkg --get-selections  | grep -w $1 | awk '{print $1}')
-    if [[ -n $package_exist ]]; then
+    if [[ -n "$package_exist" ]]; then
         return 0
     else
         return 1
     fi
+    set -e
 }
 
 ## Check root.
@@ -95,7 +97,9 @@ function mode1 () {
     red_log "Downloading pacapt."
     sudo wget  -O /$pacapt_path $pacapt_url
     sudo chmod 755 /$pacapt_path
-    make_link
+    if [[ ! $1 == "update" ]]; then
+        make_link
+    fi
     # pacapt_to_yay
     return 0
 }
@@ -163,7 +167,7 @@ function mode4 () {
         exit 1
     fi
     if [[ -f /$pacapt_path ]]; then
-        echo "pacapt was not found."
+        red_log "pacapt was not found."
     fi
     rm /$pacapt_path
     sudo unlink /usr/local/bin/pacapt-tlmgr
@@ -185,13 +189,14 @@ function mode5 () {
     function update_manual () {
         red_log "Searching pacapt..."
         pacapt_path=$(sudo find  / -name "pacapt" -and -perm 755 -type f 2> /dev/null)
-        pacapt_path=$(echo $pacapt_path | cut -c 2-${#pacapt_path})
         if [[ -z "$pacapt_path" ]]; then
             red_log "Error! Pacapt is not installed."
             exit 1
+        else
+            pacapt_path=$(echo $pacapt_path | cut -c 2-${#pacapt_path})
         fi
         rm /$pacapt_path
-        mode1
+        mode1 update
 
     }
     search_pkg pacapt
@@ -208,7 +213,7 @@ function error () {
     exit 1
 }
 
-
+# red_log $pacapt_path
 ## run function
 case $mode in
     1 ) mode1 ;;
