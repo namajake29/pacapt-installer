@@ -26,6 +26,7 @@ fi
 
 ## Initialize
 mode=0
+update_mode=
 if [[ ! $# = 0 ]]; then
     argument="$@"
 else
@@ -52,6 +53,7 @@ if [[ -z $argument ]]; then
     echo "2: After creating the deb file, install it automatically."
     echo "3: After creating the deb file, install it yourself."
     echo "4: Remove manually placed pacapt."
+    echo "5: Update installed pacapt."
     echo
     printf "Please enter mode number. : "
     read mode
@@ -171,6 +173,37 @@ function mode4 () {
     sudo unlink /usr/local/bin/pacman
     red_log "The file has been deleted."
     return 0
+}
+
+function mode5 () {
+    function update_deb () {
+        search_pkg pacapt
+        if [[ $? = 0 ]]; then
+            red_log "Removing old pacapt"
+            dpkg -r pacapt
+            mode2
+        fi
+        return 0
+    }
+    function update_manual () {
+        red_log "Searching pacapt..."
+        pacapt_path=$(sudo find  / -name "pacapt" -and -perm 755 -type f 2> /dev/null)
+        pacapt_path=$(echo $pacapt_path | cut -c 2-${#pacapt_path})
+        if [[ -z "$pacapt_path" ]]; then
+            red_log "Error! Pacapt is not installed."
+            exit 1
+        fi
+        rm /$pacapt_path
+        mode1
+
+    }
+    search_pkg pacapt
+    if [[ $? = 0 ]]; then
+        update_deb
+    else
+        update_manual
+    fi
+
 }
 
 function error () {
