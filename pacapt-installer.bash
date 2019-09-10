@@ -69,8 +69,8 @@ function check_debian () {
     if [[ -f /etc/os-release ]]; then
         source /etc/os-release
         case $ID in 
-            ubuntu ) echo "The distribution is Ubuntu." ;;
-            debian ) echo "The distribution is Debian." ;;
+            ubuntu ) red_log "The distribution is Ubuntu." ;;
+            debian ) red_log "The distribution is Debian." ;;
             * ) red_log "This mode is only available for Debian and its derivatives."
                 exit 1 ;;
         esac
