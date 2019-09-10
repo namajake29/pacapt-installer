@@ -177,12 +177,9 @@ function mode4 () {
 
 function mode5 () {
     function update_deb () {
-        search_pkg pacapt
-        if [[ $? = 0 ]]; then
-            red_log "Removing old pacapt"
-            dpkg -r pacapt
-            mode2
-        fi
+        red_log "Removing old pacapt"
+        dpkg -r pacapt
+        mode2
         return 0
     }
     function update_manual () {
