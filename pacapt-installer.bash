@@ -5,7 +5,17 @@ set -e
 
 ## Initial function
 function red_log () {
-    echo -e "\033[0;31m$@\033[0;39m"
+    echo -e "\033[0;31m$@\033[0;39m" >&2
+    return 0
+}
+
+function blue_log () {
+    echo -e "\033[0;34m$@\033[0;39m"
+    return 0
+}
+
+function yellow_log () {
+    echo -e "\033[0;33m$@\033[0;39m" >&2
     return 0
 }
 
@@ -97,8 +107,8 @@ function check_debian () {
     if [[ -f /etc/os-release ]]; then
         source /etc/os-release
         case $ID in 
-            ubuntu ) red_log "The distribution is Ubuntu." ;;
-            debian ) red_log "The distribution is Debian." ;;
+            ubuntu ) blue_log "The distribution is Ubuntu." ;;
+            debian ) blue_log "The distribution is Debian." ;;
             * ) red_log "This mode is only available for Debian and its derivatives."
                 exit 1 ;;
         esac
@@ -133,24 +143,24 @@ function mode1 () {
 }
 
 function build_deb () {
-    red_log "Start creating a Debian package file."
+    blue_log "Start creating a Debian package file."
     if [[ ! -d $working_directly ]]; then 
         echo "Creating working directory."
         mkdir $working_directly
     fi
     cd $working_directly
-    red_log "Creating working directory."
+    blue_log "Creating working directory."
     mkdir -p ./$( echo $pacapt_path | sed -e 's/pacapt//g')
-    red_log "Downloading pacapt."
+    blue_log "Downloading pacapt."
     sudo wget -O ./$pacapt_path $pacapt_url
-    red_log "Creating DEBIAN directory."
+    blue_log "Creating DEBIAN directory."
     mkdir DEBIAN
     cd ./DEBIAN
-    red_log "Downloading control."
+    blue_log "Downloading control."
     wget $control_url
-    red_log "Downloading postinst"
+    blue_log "Downloading postinst"
     wget $postinst_url
-    red_log "Downloading postrm"
+    blue_log "Downloading postrm"
     wget $postrm_url
     echo -e "$(md5sum ../$pacapt_path | awk '{print $1}')    $pacapt_path" > ./md5sums
     cd ../../
@@ -163,13 +173,13 @@ function mode2 {
     check_debian
     build_deb
     if [[ $(search_pkg gdebi) = 1 ]]; then
-        red_log "Installing gdebi..."
+        blue_log "Installing gdebi..."
         apt-get --yes update > /dev/null
         apt-get --yes install gdebi-core > /dev/null
     fi
     gdebi $working_directly.deb
     if [[ $(search_pkg gdebi) = 1 ]]; then
-        red_log "Uninstalling gdebi..."
+        blue_log "Uninstalling gdebi..."
         apt-get --yes purge gdebi-core > /dev/null
         apt-get --yes --purge autoremove > /dev/null
         apt-get --yes clean > /dev/null
@@ -203,19 +213,19 @@ function mode4 () {
     sudo unlink /usr/local/bin/p-tlmgr
     sudo unlink /usr/local/bin/p-conda
     sudo unlink /usr/local/bin/pacman
-    red_log "The file has been deleted."
+    blue_log "The file has been deleted."
     return 0
 }
 
 function mode5 () {
     function update_deb () {
-        red_log "Removing old pacapt"
+        blue_log "Removing old pacapt"
         dpkg -r pacapt
         mode2
         return 0
     }
     function update_manual () {
-        red_log "Searching pacapt..."
+        blue_log "Searching pacapt..."
         pacapt_path=$(sudo find  / -name "pacapt" -and -perm 755 -type f 2> /dev/null)
         if [[ -z "$pacapt_path" ]]; then
             red_log "Error! Pacapt is not installed."
@@ -245,7 +255,7 @@ function error () {
     fi
 }
 
-# red_log $pacapt_path
+# blue_log $pacapt_path
 ## run function
 case $mode in
     1 ) mode1 ;;
