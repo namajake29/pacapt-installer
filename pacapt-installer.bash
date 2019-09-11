@@ -1,6 +1,17 @@
 #!/usr/bin/env bash
 set -e
 
+
+## Settings
+working_directly="./pacapt"
+control_url="https://raw.githubusercontent.com/Hayao0819/pacapt-installer/master/control"
+postinst_url="https://raw.githubusercontent.com/Hayao0819/pacapt-installer/master/postinst"
+postrm_url="https://raw.githubusercontent.com/Hayao0819/pacapt-installer/master/postrm"
+pacapt_url="https://github.com/icy/pacapt/raw/ng/pacapt"
+pacapt_path="usr/local/bin/pacapt"
+deb_name=./pacapt.deb
+
+
 ## pacapt installer for Ubuntu
 
 ## Initial function
@@ -52,21 +63,12 @@ fi
 ## Initialize
 mode=0
 update_mode=
+initial_directory=$(pwd)
 if [[ ! $# = 0 ]]; then
     argument="$@"
 else
     argument=
 fi
-
-## Settings
-working_directly="./pacapt"
-control_url="https://raw.githubusercontent.com/Hayao0819/pacapt-installer/master/control"
-postinst_url="https://raw.githubusercontent.com/Hayao0819/pacapt-installer/master/postinst"
-postrm_url="https://raw.githubusercontent.com/Hayao0819/pacapt-installer/master/postrm"
-pacapt_url="https://github.com/icy/pacapt/raw/ng/pacapt"
-pacapt_path="usr/local/bin/pacapt"
-initial_directory=$(pwd)
-
 
 ## Select mode.
 if [[ -z $argument ]]; then
