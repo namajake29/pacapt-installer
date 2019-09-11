@@ -20,6 +20,19 @@ function search_pkg () {
     set -e
 }
 
+function how_to_use () {
+cat <<EOS
+
+1: Install pacapt directly in the directory.(Do not use Package Manager.)
+2: Install automatically after creating a Debian package.(Debian only)
+3: Create a Debian package and do not install it.(Debian only)
+4: Remove manually placed pacapt.(It is installed in mode1)
+5: Update installed pacapt.(The mode is determined automatically.)
+6: Exit.
+
+EOS
+}
+
 ## Check root.
 if [[ ! $UID = 0 ]]; then
     red_log "You need root permission."
@@ -47,6 +60,9 @@ initial_directory=$(pwd)
 
 ## Select mode.
 if [[ -z $argument ]]; then
+
+# Old message
+<< COMMENT
     echo 
     echo "------pacapt installer------"
     echo
@@ -59,6 +75,18 @@ if [[ -z $argument ]]; then
     echo
     printf "Please enter mode number. : "
     read mode
+COMMENT
+
+cat <<EOS
+
+---------Pacapt installer---------
+
+What are you doing to do?
+
+EOS
+how_to_use
+printf "Please enter mode number. : "
+read mode 
 else
     mode=$argument
 fi
@@ -209,8 +237,12 @@ function mode5 () {
 }
 
 function error () {
-    red_log "Enter the mode number."
-    exit 1
+    red_log "Enter the correct mode number."
+    if [[ -z $argument ]]; then
+        $0
+    else
+        how_to_use
+    fi
 }
 
 # red_log $pacapt_path
@@ -221,6 +253,7 @@ case $mode in
     3 ) mode3 ;;
     4 ) mode4 ;;
     5 ) mode5 ;;
+    6 ) exit 0 ;;
     0 ) error ;;
     * ) error ;;
 esac
