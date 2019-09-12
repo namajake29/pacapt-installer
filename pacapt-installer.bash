@@ -7,7 +7,7 @@ working_directly="./pacapt"
 control_url="https://raw.githubusercontent.com/Hayao0819/pacapt-installer/master/control"
 postinst_url="https://raw.githubusercontent.com/Hayao0819/pacapt-installer/master/postinst"
 postrm_url="https://raw.githubusercontent.com/Hayao0819/pacapt-installer/master/postrm"
-pacapt_url="https://github.com/icy/pacapt/raw/ng/pacapt"
+pacapt_url="https://github.com/Hayao0819/pacapt/raw/ng/pacapt"
 pacapt_path="usr/local/bin/pacapt"
 deb_name=./pacapt.deb
 
@@ -34,8 +34,10 @@ function search_pkg () {
     set +e
     package_exist=$(dpkg --get-selections  | grep -w $1 | awk '{print $1}')
     if [[ -n "$package_exist" ]]; then
+        printf 0
         return 0
     else
+        printf 1
         return 1
     fi
     set -e
