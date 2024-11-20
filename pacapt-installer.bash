@@ -4,10 +4,10 @@ set -e
 
 ## Settings
 working_directly="./pacapt"
-control_url="https://raw.githubusercontent.com/Hayao0819/pacapt-installer/master/control"
-postinst_url="https://raw.githubusercontent.com/Hayao0819/pacapt-installer/master/postinst"
-postrm_url="https://raw.githubusercontent.com/Hayao0819/pacapt-installer/master/postrm"
-pacapt_url="https://github.com/Hayao0819/pacapt/raw/ng/pacapt"
+control_url="https://raw.githubusercontent.com/namajake29/pacapt-installer/master/control"
+postinst_url="https://raw.githubusercontent.com/namajake29/pacapt-installer/master/postinst"
+postrm_url="https://raw.githubusercontent.com/namajake29/pacapt-installer/master/postrm"
+pacapt_url="https://github.com/namajake29/pacapt/raw/ng/pacapt"
 pacapt_path="usr/local/bin/pacapt"
 deb_name=./pacapt.deb
 
