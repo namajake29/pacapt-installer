@@ -1,4 +1,5 @@
 # pacapt-installer
+fork元から少し書き換えただけなので動作保証できません
 
 Start the installer with the following code.  
 
